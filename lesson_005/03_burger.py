@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from my_burger import burger
+from my_burger import *
 
 # Создать модуль my_burger. В нем определить функции добавления инградиентов:
 #  - булочки
@@ -16,4 +16,11 @@ from my_burger import burger
 # Создать рецепт своего бургера, по вашему вкусу.
 # Если не хватает инградиентов - создать соответствующие функции в модуле my_burger
 
-burger('Колхозный бургер')
+burger_name('Колхозный бургер')
+bread()
+cutlet()
+cucumbers()
+tomatoes()
+mayonnaise()
+cheese()
+finish_burger()
