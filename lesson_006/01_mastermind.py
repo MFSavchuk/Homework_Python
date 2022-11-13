@@ -44,3 +44,31 @@
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
 
 # TODO здесь ваш код...
+
+import mastermind_engine
+
+mastermind_engine.get_number()
+
+
+print(mastermind_engine.hidden_number)
+
+guess = input('Введите четырехзначное число: ')
+guess_number = []
+
+for i in range(len(guess)):
+    guess_number.append(int(guess[i]))
+print(guess_number)
+
+cows = 0
+bulls = 0
+
+for i in range(len(guess_number)):
+    if guess_number[i] == mastermind_engine.hidden_number[i]:
+        bulls += 1
+    elif guess_number[i] in mastermind_engine.hidden_number:
+        cows += 1
+    else:
+        print(f'Число {guess_number[i]} нет в списке')
+
+print(f'Быки - {bulls}')
+print(f'Коровы - {cows}')
