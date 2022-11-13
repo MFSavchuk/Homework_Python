@@ -15,5 +15,16 @@ def get_number():
             hidden_number.append(random)
 
 
-def check_number():
-    pass
+def check_number(guess_number):
+    cows = 0
+    bulls = 0
+
+    for i in range(len(guess_number)):
+        if guess_number[i] == hidden_number[i]:
+            bulls += 1
+        elif guess_number[i] in hidden_number:
+            cows += 1
+        else:
+            print(f'Число {guess_number[i]} нет в списке')
+
+    print(f'Быки - {bulls}, Коровы - {cows}')
