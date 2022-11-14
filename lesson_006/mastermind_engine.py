@@ -10,11 +10,13 @@ def get_number():
     while True:
         if len(hidden_number) == 4:
             break
-        random = rd.randint(1, 9)
+        random = rd.randint(0, 9)
         if random in hidden_number:
             continue
         else:
             hidden_number.append(random)
+            if hidden_number[0] == 0:
+                hidden_number.pop(0)
 
 
 def check_number(guess_number):
@@ -29,6 +31,3 @@ def check_number(guess_number):
             cows += 1
 
     print(f'быки - {bulls}, коровы - {cows}')
-
-
-
