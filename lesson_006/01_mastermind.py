@@ -19,15 +19,13 @@ while True:
     # print(mm.hidden_number)  # строка для теста
 
     while True:
-        if mm.bulls == 4:
-            print(f'\n    Вы выграли. Количество попыток - {counts_try}')
-            mm.bulls = 0
-            break
 
         guess = input('Введите четырехзначное число: ')
 
         if not guess.isnumeric():
-            print('\n    Ошибка!!! Вы ввели не только числа !!! \n')
+            print('\n    Ошибка!!! Вы ввели не только числа. \n')
+        elif len(guess) != 4:
+            print('\n    Ошибка!!! Количество цифр больше или меньше четырех. \n')
         else:
             guess_number = []
             for i in range(len(guess)):
@@ -37,8 +35,11 @@ while True:
                 print('\n    Ошибка!!! Все числа должны быть разные. \n')
                 continue
 
-            mm.check_number(guess_number=guess_number)
+            check = mm.check_number(guess_number=guess_number)
             counts_try += 1
+            if check:
+                print(f'\n    Вы выграли. Количество попыток - {counts_try}')
+                break
 
     continuation = input('\n    Хотите еще партию? Введите "Да" ')
     if continuation != 'Да' and continuation != 'да':

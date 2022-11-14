@@ -20,9 +20,9 @@ def get_number():
 
 
 def check_number(guess_number):
-    cows = 0
     global bulls
     bulls = 0
+    cows = 0
 
     for i in range(len(guess_number)):
         if guess_number[i] == hidden_number[i]:
@@ -31,3 +31,6 @@ def check_number(guess_number):
             cows += 1
 
     print(f'быки - {bulls}, коровы - {cows}')
+    if bulls == 4:
+        bulls = 0
+        return True
