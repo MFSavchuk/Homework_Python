@@ -1,14 +1,13 @@
 import simple_draw as sd
 
 snowflakes = []
-numbers_fallen_snowflakes = []
 
 
 def create_snowflakes(count):
     for i in range(count):
         random_x = sd.random_number(0, 600)
         random_y = sd.random_number(600, 1200)
-        random_size = sd.random_number(25, 50)
+        random_size = sd.random_number(5, 10)
 
         snowflakes.append([random_x, random_y, random_size])
 
@@ -31,10 +30,9 @@ def move_snowflakes():
 
 
 def check_falls_snowflakes():
-    global numbers_fallen_snowflakes
     numbers_fallen_snowflakes = []
     for i in range(len(snowflakes)):
-        if snowflakes[i][1] < -100:
+        if snowflakes[i][1] < sd.random_number(-5, 10):
             numbers_fallen_snowflakes.append(i)
     numbers_fallen_snowflakes.sort(reverse=True)
 

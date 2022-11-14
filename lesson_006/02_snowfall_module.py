@@ -18,7 +18,7 @@ sd.background_color = sd.COLOR_BLACK
 
 # создать_снежинки(N)
 
-sf.create_snowflakes(25)
+sf.create_snowflakes(125)
 
 while True:
     sf.draw_snowflakes(sd.background_color)
