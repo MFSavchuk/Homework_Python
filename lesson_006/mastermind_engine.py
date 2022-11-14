@@ -6,6 +6,7 @@ bulls = None
 
 def get_number():
     global hidden_number
+    hidden_number = []
     while True:
         if len(hidden_number) == 4:
             break
@@ -28,5 +29,6 @@ def check_number(guess_number):
             cows += 1
 
     print(f'быки - {bulls}, коровы - {cows}')
+
 
 

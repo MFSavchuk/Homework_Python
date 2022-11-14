@@ -12,15 +12,16 @@ print(
     'отгадано в том случае, если имеем 4 «быка». \n')
 
 while True:
-    mm.hidden_number = []
-    mm.bulls = 0
     counts_try = 0
+
     mm.get_number()
+
     # print(mm.hidden_number)  # строка для теста
 
     while True:
         if mm.bulls == 4:
             print(f'\n    Вы выграли. Количество попыток - {counts_try}')
+            mm.bulls = 0
             break
 
         guess = input('Введите четырехзначное число: ')
@@ -64,4 +65,3 @@ while True:
 # Движок игры реализует только саму функциональность игры.
 # Это пример применения SOLID принципа (см https://goo.gl/GFMoaI) в архитектуре программ.
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
-
