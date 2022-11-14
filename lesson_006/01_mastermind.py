@@ -34,7 +34,7 @@ while True:
                 guess_number.append(int(guess[i]))
 
             if len(set(guess_number)) != 4:
-                print('\n    Ошибка!!! Введите четырехзначное число. Все числа разные. \n')
+                print('\n    Ошибка!!! Все числа должны быть разные. \n')
                 continue
 
             mm.check_number(guess_number=guess_number)
