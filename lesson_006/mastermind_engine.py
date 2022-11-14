@@ -1,6 +1,7 @@
 import random as rd
 
 hidden_number = []
+bulls = None
 
 
 def get_number():
@@ -17,6 +18,7 @@ def get_number():
 
 def check_number(guess_number):
     cows = 0
+    global bulls
     bulls = 0
 
     for i in range(len(guess_number)):
@@ -24,7 +26,7 @@ def check_number(guess_number):
             bulls += 1
         elif guess_number[i] in hidden_number:
             cows += 1
-        else:
-            print(f'Число {guess_number[i]} нет в списке')
 
-    print(f'Быки - {bulls}, Коровы - {cows}')
+    print(f'быки - {bulls}, коровы - {cows}')
+
+
