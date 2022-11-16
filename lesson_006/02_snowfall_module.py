@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import simple_draw as sd
-import snowfall as sf
+from snowfall import draw_snowflakes, move_snowflakes, check_falls_snowflakes, create_snowflakes
 
 sd.background_color = sd.COLOR_BLACK
 
@@ -18,13 +18,13 @@ sd.background_color = sd.COLOR_BLACK
 
 # создать_снежинки(N)
 
-sf.create_snowflakes(125)
+create_snowflakes(125)
 
 while True:
-    sf.draw_snowflakes(sd.background_color)
-    sf.move_snowflakes()
-    sf.draw_snowflakes(sd.COLOR_WHITE)
-    sf.check_falls_snowflakes()
+    draw_snowflakes(sd.background_color)
+    move_snowflakes()
+    draw_snowflakes(sd.COLOR_WHITE)
+    check_falls_snowflakes()
     sd.sleep(0.1)
     if sd.user_want_exit():
         break
