@@ -52,7 +52,7 @@ def get_fallen_flakes():
 def append_flakes(count):
     for _ in range(count):
         flakes.append(Snowflake())
-    Snowflake.fallen_flakes = 0
+    # Snowflake.fallen_flakes = 0
 
 
 # flake = Snowflake()
@@ -76,9 +76,9 @@ while True:
         flake.move()
         flake.draw()
         flake.can_fall()
-        fallen_flakes = get_fallen_flakes()  # подчитать сколько снежинок уже упало
-        if fallen_flakes:
-            append_flakes(count=fallen_flakes)  # добавить еще сверху
+    fallen_flakes = get_fallen_flakes()  # подчитать сколько снежинок уже упало
+    if fallen_flakes:
+        append_flakes(count=fallen_flakes)  # добавить еще сверху
     sd.sleep(0.1)
     if sd.user_want_exit():
         break
