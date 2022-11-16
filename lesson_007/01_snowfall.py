@@ -18,12 +18,14 @@ class Snowflake:
         self.size = sd.random_number(5, 10)
         self.wind = 0
         self.position = None
+        self.can_fall_status = True
 
     def draw(self):
         self.position = sd.get_point(self.x_cords, self.y_cord)
         sd.snowflake(center=self.position, length=self.size, color=sd.COLOR_WHITE)
 
     def move(self):
+
         self.wind = sd.random_number(-5, 5)
         self.x_cords -= self.wind
         self.y_cord -= sd.random_number(6, 10)
@@ -33,18 +35,27 @@ class Snowflake:
         sd.snowflake(center=self.position, length=self.size, color=sd.background_color)
 
     def can_fall(self):
-        if self.y_cord < 0:
+        # if not self.can_fall_status:
+        #     return self.can_fall_status
+        if self.y_cord < 100:
+            # self.can_fall_status = False
             Snowflake.fallen_flakes += 1
+            # return self.can_fall_status
 
 
 def get_flakes(count):
-    flakes_1 = []
+    flakes = []
     for _ in range(count):
-        flakes_1.append(Snowflake())
-    return flakes_1
+        flakes.append(Snowflake())
+    return flakes
 
 
 def get_fallen_flakes():
+    # count = 0
+    # for flake in flakes:
+    #     if not flake.can_fall_status:
+    #         count += 1
+    # print(count)
     print(Snowflake.fallen_flakes)
     return Snowflake.fallen_flakes
 
@@ -52,7 +63,7 @@ def get_fallen_flakes():
 def append_flakes(count):
     for _ in range(count):
         flakes.append(Snowflake())
-    # Snowflake.fallen_flakes = 0
+    Snowflake.fallen_flakes -= Snowflake.fallen_flakes
 
 
 # flake = Snowflake()
@@ -76,7 +87,7 @@ while True:
         flake.move()
         flake.draw()
         flake.can_fall()
-    fallen_flakes = get_fallen_flakes()  # подчитать сколько снежинок уже упало
+    fallen_flakes = Snowflake.fallen_flakes  # подчитать сколько снежинок уже упало
     if fallen_flakes:
         append_flakes(count=fallen_flakes)  # добавить еще сверху
     sd.sleep(0.1)
