@@ -10,18 +10,13 @@ import simple_draw as sd
 
 
 class Snowflake:
-    x_cords = 0
-    y_cord = 0
-    size = 0
-    position = None
-
-    def __int__(self):
+        def __init__(self):
         self.x_cords = sd.random_number(0, 600)
         self.y_cord = sd.random_number(300, 600)
         self.size = sd.random_number(5, 10)
+        self.position = sd.get_point(self.x_cords, self.y_cord)
 
     def draw(self):
-        self.position = sd.get_point(self.x_cords, self.y_cord)
         sd.snowflake(center=self.position, length=self.size, color=sd.COLOR_WHITE)
 
     def move(self):
