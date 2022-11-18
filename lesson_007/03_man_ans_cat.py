@@ -46,34 +46,36 @@ class Man:
     def __init__(self, name):
         self.name = name
         self.fullness = 50
-        self.house = None
+        self.house = 100
 
     def __str__(self):
         return 'Я - {}, сытость {}'.format(
             self.name, self.fullness)
 
     def eat(self):
-        if self.house.food >= 10:
+        if self.house.food >= 20:
             cprint('{} поел(а)'.format(self.name), color='yellow')
-            self.fullness += 10
-            self.house.food -= 10
+            self.fullness += 20
+            self.house.food -= 20
         else:
-            cprint('{} нет еды'.format(self.name), color='red')
+            cprint('{} ГОЛОДАЕТ !!!'.format(self.name), color='green')
+            self.fullness -= 1
+            self.shopping()
 
     def work(self):
         cprint('{} сходил(а) на работу'.format(self.name), color='blue')
-        self.house.money += 45
-        self.fullness -= 10
+        self.house.money += 150
+        self.fullness -= 5
 
     def watch_TV(self):
         cprint('{} смотрел(а) TV целый день'.format(self.name), color='green')
-        self.fullness -= 10
+        self.fullness -= 5
 
     def clean(self):
-        if self.fullness > 20:
+        if self.fullness > 30:
             cprint('{} убиралась(ся) целый день'.format(self.name), color='green')
             self.house.dirt -= 80
-            self.fullness -= 20
+            self.fullness -= 10
         else:
             self.eat()
 
@@ -111,7 +113,7 @@ class Man:
                 print(f'Я {self.name}, и я приютила {pet.name}')
                 setattr(self.house, 'pet_food', 0)
                 setattr(self.house, 'dirt', 0)
-                break
+
 
     def act(self):
         if self.fullness <= 0:
@@ -183,7 +185,7 @@ citizens = [
 ]
 
 pets = [
-    Pet()
+    Pet(), Pet()
 ]
 
 my_sweet_home = House()
