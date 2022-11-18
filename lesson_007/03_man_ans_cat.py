@@ -32,12 +32,13 @@ from termcolor import cprint
 class House:
 
     def __init__(self):
+        self.name = 'Экодолье Шолохово'
         self.food = 50
         self.money = 0
 
     def __str__(self):
-        return 'В доме еды осталось {}, денег осталось {}'.format(
-            self.food, self.money)
+        return 'В доме осталось: еды - {}, еды для питомцев - {}, денег - {}. Дом грязный на {} %'.format(
+            self.food, self.pet_food, self.money, self.dirt)
 
 
 class Man:
@@ -53,33 +54,64 @@ class Man:
 
     def eat(self):
         if self.house.food >= 10:
-            cprint('{} поел'.format(self.name), color='yellow')
+            cprint('{} поел(а)'.format(self.name), color='yellow')
             self.fullness += 10
             self.house.food -= 10
         else:
             cprint('{} нет еды'.format(self.name), color='red')
 
     def work(self):
-        cprint('{} сходил на работу'.format(self.name), color='blue')
-        self.house.money += 50
+        cprint('{} сходил(а) на работу'.format(self.name), color='blue')
+        self.house.money += 45
         self.fullness -= 10
 
-    def watch_MTV(self):
-        cprint('{} смотрел MTV целый день'.format(self.name), color='green')
+    def watch_TV(self):
+        cprint('{} смотрел(а) TV целый день'.format(self.name), color='green')
         self.fullness -= 10
+
+    def clean(self):
+        if self.fullness > 20:
+            cprint('{} убиралась(ся) целый день'.format(self.name), color='green')
+            self.house.dirt -= 80
+            self.fullness -= 20
+        else:
+            self.eat()
 
     def shopping(self):
         if self.house.money >= 50:
-            cprint('{} сходил в магазин за едой'.format(self.name), color='magenta')
+            cprint(f'{self.name} сходил(а) в магазин за едой для {pet.name}', color='magenta')
             self.house.money -= 50
             self.house.food += 50
         else:
             cprint('{} деньги кончились!'.format(self.name), color='red')
+            self.work()
+
+    def shopping_pet(self):
+        if self.house.money >= 50:
+            cprint('{} сходил(а) в магазин за едой'.format(self.name), color='magenta')
+            self.house.money -= 50
+            self.house.pet_food += 50
+        else:
+            cprint('{} деньги кончились!'.format(self.name), color='red')
+            self.work()
 
     def go_to_the_house(self, house):
         self.house = house
         self.fullness -= 10
-        cprint('{} Вьехал в дом'.format(self.name), color='cyan')
+        if self.name == 'Лена':
+            cprint(f'{self.name} въехала в {self.house.name}', color='cyan')
+        elif self.name == 'Миша':
+            cprint(f'{self.name} въехал в {self.house.name}', color='cyan')
+
+    def take_dog(self, pets_list):
+        for pet in pets_list:
+            if self.name == 'Лена':
+                pet.house = self.house
+                pet.name = input('Какой имя дать псу? ')
+                print(f'Я {self.name}, и я приютила {pet.name}')
+                setattr(self.house, 'pet_food', 0)
+                setattr(self.house, 'dirt', 0)
+                break
 
     def act(self):
         if self.fullness <= 0:
@@ -90,39 +122,44 @@ class Man:
             self.eat()
         elif self.house.food < 10:
             self.shopping()
+        elif self.house.pet_food < 10:
+            self.shopping_pet()
         elif self.house.money < 50:
             self.work()
+        elif self.house.dirt >= 100:
+            self.clean()
         elif dice == 1:
             self.work()
         elif dice == 2:
             self.eat()
         else:
-            self.watch_MTV()
+            self.watch_TV()
 
 
 class Pet:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.name = None
         self.house = None
         self.fullness = 20
 
     def __str__(self):
         return f'Я {self.name}, сытость {self.fullness}'
 
-    def go_into_house(self, house):
-        self.house = house
-        print(f'Я {self.name}, Я нашла свой дом')
-        setattr(house, 'pet_food', 0)
-        setattr(house, 'dirt', 0)
-
     def eat(self):
-        self.fullness += 20
-        self.house.pet_food -= 10
+        if self.house.pet_food < 10:
+            cprint('{} ГОЛОДАЕТ !!!'.format(self.name), color='green')
+            self.fullness -= 2
+        else:
+            cprint('{} Покушал'.format(self.name), color='green')
+            self.fullness += 20
+            self.house.pet_food -= 10
 
     def sleep(self):
+        cprint('{} спал целый день'.format(self.name), color='green')
         self.fullness -= 10
 
-    def shitting(self, house):
+    def shitting(self):
+        cprint('{} гадил и лаял'.format(self.name), color='green')
         self.fullness -= 10
         self.house.dirt += 5
 
@@ -130,7 +167,14 @@ class Pet:
         if self.fullness <= 0:
             cprint('{} умер...'.format(self.name), color='red')
             return
-        dice = randint(1, 6)
+        dice = randint(1, 4)
+
+        if self.fullness < 20:
+            self.eat()
+        elif dice == 1:
+            self.sleep()
+        else:
+            self.shitting()
 
 
 citizens = [
@@ -139,20 +183,28 @@ citizens = [
 ]
 
 pets = [
-    Pet(name='Барни'),
+    Pet()
 ]
 
 my_sweet_home = House()
+
 for citisen in citizens:
     citisen.go_to_the_house(house=my_sweet_home)
 
-for day in range(1, 5):
+for citisen in citizens:
+    citisen.take_dog(pets)
+
+for day in range(1, 3000):
     print('================ день {} ================'.format(day))
     for citisen in citizens:
         citisen.act()
+    for pet in pets:
+        pet.act()
     print('--- в конце дня ---')
     for citisen in citizens:
         print(citisen)
+    for pet in pets:
+        print(pet)
         print()
     print(my_sweet_home)
 
