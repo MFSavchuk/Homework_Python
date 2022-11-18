@@ -46,7 +46,7 @@ class Man:
     def __init__(self, name):
         self.name = name
         self.fullness = 50
-        self.house = 100
+        self.house = None
 
     def __str__(self):
         return 'Я - {}, сытость {}'.format(
@@ -64,12 +64,12 @@ class Man:
 
     def work(self):
         cprint('{} сходил(а) на работу'.format(self.name), color='blue')
-        self.house.money += 150
-        self.fullness -= 5
+        self.house.money += 20
+        self.fullness -= 10
 
     def watch_TV(self):
         cprint('{} смотрел(а) TV целый день'.format(self.name), color='green')
-        self.fullness -= 5
+        self.fullness -= 10
 
     def clean(self):
         if self.fullness > 30:
@@ -154,7 +154,7 @@ class Pet:
         else:
             cprint('{} Покушал'.format(self.name), color='green')
             self.fullness += 20
-            self.house.pet_food -= 10
+            self.house.pet_food -= 20
 
     def sleep(self):
         cprint('{} спал целый день'.format(self.name), color='green')
@@ -196,7 +196,7 @@ for citisen in citizens:
 for citisen in citizens:
     citisen.take_dog(pets)
 
-for day in range(1, 3000):
+for day in range(1, 365):
     print('================ день {} ================'.format(day))
     for citisen in citizens:
         citisen.act()
