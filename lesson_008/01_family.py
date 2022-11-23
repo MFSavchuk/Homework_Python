@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import random
 
 from termcolor import cprint
 from random import randint
@@ -45,16 +44,16 @@ from random import randint
 
 
 class House:
-    total_money = 0
-    total_food = 0
-    total_buy_fur_coat = 0
 
     def __init__(self, name):
         self.name = name
         self.money = 100
         self.food = 50
         self.dirt = 0
-        House.total_money += self.money
+        self.total_money = 0
+        self.total_food = 0
+        self.total_buy_fur_coat = 0
+        self.total_money += self.money
 
     def __str__(self):
         return f'{self.name}: денег - {self.money}, еды - {self.food}, загрязнен на {self.dirt}%'
@@ -66,6 +65,7 @@ class Man:
         self.house = house
         self.fullness = 30
         self.happiness = 100
+        self.free_days = 0
 
     def __str__(self):
         return f'{self.name}: сытость - {self.fullness}, счастье - {self.happiness}'
@@ -74,36 +74,37 @@ class Man:
         if self.house.food >= 30:
             self.fullness += 30
             self.house.food -= 30
+            self.house.dirt += 5
             print(f'{self.name} покушал(а)')
         else:
             self.fullness -= 5
             print(f'{self.name} голодает...')
 
-    def act(self):
-        if self.fullness <= 0:
-            print(f'{self.name} умерла от голода...')
-            return
-        if self.happiness < 10:
-            print(f'{self.name} умерла от депрессии...')
-            return
-
 
 class Husband(Man):
-
-    def __init__(self, name, house):
-        super().__init__(name=name, house=house)
 
     def __str__(self):
         return super().__str__()
 
     def act(self):
-        super().act()
+        if self.fullness <= 0:
+            print(f'{self.name} умер от голода...')
+            return
+        if self.happiness < 10:
+            print(f'{self.name} умер от депрессии...')
+            return
+        if self.house.dirt > 90:
+            self.happiness -= 10
         if self.fullness < 30:
             self.eat()
         elif self.house.money < 50:
             self.work()
-        else:
+        elif self.happiness < 30:
             self.coding()
+        else:
+            self.fullness -= 10
+            print(f'{self.name} отдыхал')
+            self.free_days += 1
 
     def work(self):
         self.house.money += 150
@@ -113,41 +114,73 @@ class Husband(Man):
     def coding(self):
         self.happiness += 20
         self.fullness -= 10
+        self.house.dirt += 5
         print(f'{self.name} программировал весь день')
 
 
 class Wife(Man):
 
+    def __init__(self, name, house, helper):
+        self.helper = helper
+        super().__init__(name=name, house=house)
+
     def act(self):
-        super().act()
+        if self.fullness <= 0:
+            print(f'{self.name} умерла от голода...')
+            return
+        if self.happiness < 10:
+            print(f'{self.name} умерла от депрессии...')
+            return
+        if self.house.dirt > 70:
+            self.happiness -= 10
         if self.house.food < 30:
             self.shopping()
+        if self.happiness < 40:
+            self.buy_fur_coat()
         elif self.fullness < 30:
             self.eat()
-        elif self.house.dirt > 100:
+        elif self.house.dirt > randint(50, 130):
             self.clean_house()
         else:
             self.fullness -= 10
             print(f'{self.name} отдыхала')
+            self.free_days += 1
 
     def shopping(self):
-        self.house.food += 50
-        self.house.money -= 50
-        self.fullness -= 10
-        print(f'{self.name} купила еды')
+        if self.house.money >= 50:
+            self.house.food += 50
+            self.house.money -= 50
+            self.fullness -= 10
+            print(f'{self.name} купила еды')
+        else:
+            print(f'{self.name} просит {self.helper.name} заработать на еду')
+            self.helper.work()
 
     def buy_fur_coat(self):
-        pass
+        if self.house.money >= 350:
+            self.house.money -= 350
+            self.happiness += 60
+            self.house.total_buy_fur_coat += 1
+            print(f'{self.name} купила ШУБУ')
+        else:
+            print(f'{self.name} просит {self.helper.name} заработать на ШУБУ')
+            self.helper.work()
 
     def clean_house(self):
-        self.house.dirt -= randint(25, 100)
-        self.fullness -= 10
-        print(f'{self.name} убиралась весь день')
+        random = randint(5, 100)
+        if random <= self.house.dirt:
+            self.house.dirt -= random
+            self.fullness -= 10
+            print(f'{self.name} убиралась весь день')
+        else:
+            self.house.dirt = 0
+            self.fullness -= 10
+            print(f'{self.name} убиралась весь день')
 
 
 home = House(name='Экодолье Шолохово')
 misha = Husband(name='Миша', house=home)
-lena = Wife(name='Лена', house=home)
+lena = Wife(name='Лена', house=home, helper=misha)
 
 for day in range(1, 365):
     cprint('================== День {} =================='.format(day), color='red')
@@ -156,6 +189,10 @@ for day in range(1, 365):
     cprint(misha, color='cyan')
     cprint(lena, color='cyan')
     cprint(home, color='cyan')
+cprint('====================================', color='red')
+print(f'{misha.name} отдыхал {misha.free_days} дней')
+print(f'{lena.name} отдыхала {lena.free_days} дней')
+print(f'{lena.name} купила {home.total_buy_fur_coat} шуб')
 
 # TODO после реализации первой части - отдать на проверку учителю
 
