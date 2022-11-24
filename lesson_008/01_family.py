@@ -18,7 +18,7 @@ class House:
         self.cat_food = 30
 
     def __str__(self):
-        return f'{self.name}: денег - {self.money}, еды - {self.food}, кошачей еды - {self.cat_food}, ' \
+        return f'{self.name}: денег - {self.money}, еды - {self.food}, кошачьей еды - {self.cat_food}, ' \
                f'загрязнен на {self.dirt}%'
 
 
@@ -70,7 +70,7 @@ class Husband(Man):
             self.happiness -= 10
         if self.fullness < 30:
             self.eat()
-        elif self.house.money < 250:
+        elif self.house.money < 50:
             self.work()
         elif self.happiness < 30:
             chose = randint(1, 5)
@@ -79,9 +79,13 @@ class Husband(Man):
             else:
                 self.petting_cat()
         else:
-            self.fullness -= 10
-            print(f'{self.name} отдыхал')
-            self.free_days += 1
+            chose = randint(1, 6)
+            if chose == 6:
+                self.fullness -= 10
+                print(f'{self.name} отдыхал')
+                self.free_days += 1
+            else:
+                self.work()
 
     def work(self):
         self.house.money += 150
@@ -252,22 +256,22 @@ class Child(Man):
         print(f'{self.name} спал весь день')
 
 
-home = House(name='Экодолье Шолохово')
+home = House(name='Наш TownHouse')
 misha = Husband(name='Миша', house=home)
 lena = Wife(name='Лена', house=home, helper=misha)
 kolya = Child(name='Коля', house=home)
-murzik = Cat(name='Мурзик', house=home)
+bars = Cat(name='Мурзик', house=home)
 
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     misha.act()
     lena.act()
     kolya.act()
-    murzik.act()
+    bars.act()
     cprint(misha, color='cyan')
     cprint(lena, color='cyan')
     cprint(kolya, color='cyan')
-    cprint(murzik, color='cyan')
+    cprint(bars, color='cyan')
     cprint(home, color='cyan')
 
 cprint('====================================', color='red')
@@ -287,7 +291,7 @@ print(f'Итоги года: съели еды - {home.total_food}, зарабо
 # Дополнительно вносить некий хаос в жизнь семьи
 # - N раз в год вдруг пропадает половина еды из холодильника (коты?)
 # - K раз в год пропадает половина денег из тумбочки (муж? жена? коты?!?!)
-# Промоделировать - как часто могут случаться фейлы что бы это не повлияло на жизнь героев?
+# Промоделировать - как часто могут случаться fails что бы это не повлияло на жизнь героев?
 #   (N от 1 до 5, K от 1 до 5 - нужно вычислит максимумы N и K при котором семья гарантированно выживает)
 #
 # в итоге должен получится приблизительно такой код экспериментов
