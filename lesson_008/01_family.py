@@ -4,45 +4,6 @@ from termcolor import cprint
 from random import randint
 
 
-######################################################## Часть первая
-#
-# Создать модель жизни небольшой семьи.
-#
-# Каждый день участники жизни могут делать только одно действие.
-# Все вместе они должны прожить год и не умереть.
-#
-# Муж может:
-#   есть,
-#   играть в WoT,
-#   ходить на работу,
-# Жена может:
-#   есть,
-#   покупать продукты,
-#   покупать шубу,
-#   убираться в доме,
-
-# Все они живут в одном доме, дом характеризуется:
-#   кол-во денег в тумбочке (в начале - 100)
-#   кол-во еды в холодильнике (в начале - 50)
-#   кол-во грязи (в начале - 0)
-#
-# У людей есть имя, степень сытости (в начале - 30) и степень счастья (в начале - 100).
-#
-# Любое действие, кроме "есть", приводит к уменьшению степени сытости на 10 пунктов
-# Кушают взрослые максимум по 30 единиц еды, степень сытости растет на 1 пункт за 1 пункт еды.
-# Степень сытости не должна падать ниже 0, иначе чел умрет от голода.
-#
-# Деньги в тумбочку добавляет муж, после работы - 150 единиц за раз.
-# Еда стоит 10 денег 10 единиц еды. Шуба стоит 350 единиц.
-#
-# Грязь добавляется каждый день по 5 пунктов, за одну уборку жена может убирать до 100 единиц грязи.
-# Если в доме грязи больше 90 - у людей падает степень счастья каждый день на 10 пунктов,
-# Степень счастья растет: у мужа от игры в WoT (на 20), у жены от покупки шубы (на 60, но шуба дорогая)
-# Степень счастья не должна падать ниже 10, иначе чел умирает от депрессии.
-#
-# Подвести итоги жизни за год: сколько было заработано денег, сколько съедено еды, сколько куплено шуб.
-
-
 class House:
 
     def __init__(self, name):
@@ -54,6 +15,7 @@ class House:
         self.total_food = 0
         self.total_buy_fur_coat = 0
         self.total_money += self.money
+        self.cat_food = 30
 
     def __str__(self):
         return f'{self.name}: денег - {self.money}, еды - {self.food}, загрязнен на {self.dirt}%'
@@ -82,6 +44,12 @@ class Man:
             self.fullness -= 5
             print(f'{self.name} голодает...')
 
+    def petting_cat(self):
+        self.happiness += 5
+        self.fullness -= 10
+        self.house.dirt += 5
+        print(f'{self.name} гладил(а) кота весь день')
+
 
 class Husband(Man):
 
@@ -101,10 +69,14 @@ class Husband(Man):
             self.happiness -= 10
         if self.fullness < 30:
             self.eat()
-        elif self.house.money < 50:
+        elif self.house.money < 250:
             self.work()
         elif self.happiness < 30:
-            self.coding()
+            chose = randint(1, 5)
+            if chose == 1:
+                self.coding()
+            else:
+                self.petting_cat()
         else:
             self.fullness -= 10
             print(f'{self.name} отдыхал')
@@ -152,12 +124,18 @@ class Wife(Man):
             self.buy_fur_coat()
         elif self.fullness < 30:
             self.eat()
+        elif self.house.cat_food < 10:
+            self.buy_cat_food()
         elif self.house.dirt > randint(50, 100):
             self.clean_house()
         else:
-            self.fullness -= 10
-            print(f'{self.name} отдыхала')
-            self.free_days += 1
+            chose = randint(1, 5)
+            if chose == 1:
+                self.petting_cat()
+            else:
+                self.fullness -= 10
+                print(f'{self.name} отдыхала')
+                self.free_days += 1
 
     def shopping(self):
         if self.house.money >= 50:
@@ -190,68 +168,78 @@ class Wife(Man):
             self.fullness -= 10
             print(f'{self.name} убиралась весь день')
 
+    def buy_cat_food(self):
+        if self.house.money >= 30:
+            self.house.cat_food += 30
+            self.house.money -= 30
+            self.fullness -= 10
+            print(f'{self.name} купила еды для кота')
+        else:
+            print(f'У {self.name} нет денег на еду коту')
+
+
+class Cat:
+
+    def __init__(self, name, house):
+        self.name = name
+        self.house = house
+        self.fullness = 30
+        self.isAlive = True
+
+    def __str__(self):
+        return f'{self.name}: сытость - {self.fullness}'
+
+    def act(self):
+        if self.fullness <= 0:
+            print(f'{self.name} умер от голода...')
+            self.isAlive = False
+            return
+        chose = randint(1, 9)
+        if self.fullness < 20:
+            self.eat()
+        elif chose == 3:
+            self.soil()
+        else:
+            self.sleep()
+
+    def eat(self):
+        if self.house.cat_food >= 10:
+            self.house.cat_food -= 10
+            self.fullness += 20
+        else:
+            self.fullness -= 1
+            print(f'{self.name} голодает...')
+
+    def sleep(self):
+        self.fullness -= 10
+        print(f'{self.name} спал весь день')
+
+    def soil(self):
+        self.fullness -= 10
+        self.house.dirt += 5
+        print(f'{self.name} весь день драл обои')
+
 
 home = House(name='Экодолье Шолохово')
 misha = Husband(name='Миша', house=home)
 lena = Wife(name='Лена', house=home, helper=misha)
+murzik = Cat(name='Мурзик', house=home)
 
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     misha.act()
     lena.act()
+    murzik.act()
     cprint(misha, color='cyan')
     cprint(lena, color='cyan')
+    cprint(murzik, color='cyan')
     cprint(home, color='cyan')
+
 cprint('====================================', color='red')
 print(f'{misha.name} отдыхал {misha.free_days} дней')
 print(f'{lena.name} отдыхала {lena.free_days} дней')
 print(f'Итоги года: съели еды - {home.total_food}, заработали денег - {home.total_money}, купили - '
       f'{home.total_buy_fur_coat} шуб')
-
-
-######################################################## Часть вторая
-#
-# После подтверждения учителем первой части надо
-# отщепить ветку develop и в ней начать добавлять котов в модель семьи
-#
-# Кот может:
-#   есть,
-#   спать,
-#   драть обои
-#
-# Люди могут:
-#   гладить кота (растет степень счастья на 5 пунктов)
-#
-# В доме добавляется:
-#   еда для кота (в начале - 30)
-#
-# У кота есть имя и степень сытости (в начале - 30)
-# Любое действие кота, кроме "есть", приводит к уменьшению степени сытости на 10 пунктов
-# Еда для кота покупается за деньги: за 10 денег 10 еды.
-# Кушает кот максимум по 10 единиц еды, степень сытости растет на 2 пункта за 1 пункт еды.
-# Степень сытости не должна падать ниже 0, иначе кот умрет от голода.
-#
-# Если кот дерет обои, то грязи становится больше на 5 пунктов
-
-
-class Cat:
-
-    def __init__(self, name):
-        self.name = name
-        self.fullness = 30
-
-    def act(self):
-        pass
-
-    def eat(self):
-        pass
-
-    def sleep(self):
-        pass
-
-    def soil(self):
-        pass
-
 
 ######################################################## Часть вторая бис
 #
