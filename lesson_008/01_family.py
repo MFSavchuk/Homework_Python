@@ -18,7 +18,8 @@ class House:
         self.cat_food = 30
 
     def __str__(self):
-        return f'{self.name}: денег - {self.money}, еды - {self.food}, загрязнен на {self.dirt}%'
+        return f'{self.name}: денег - {self.money}, еды - {self.food}, кошачей еды - {self.cat_food}, ' \
+               f'загрязнен на {self.dirt}%'
 
 
 class Man:
