@@ -152,24 +152,6 @@ class Wife(Man):
             print(f'{self.name} убиралась весь день')
 
 
-home = House(name='Экодолье Шолохово')
-misha = Husband(name='Миша', house=home)
-lena = Wife(name='Лена', house=home, helper=misha)
-
-for day in range(1, 366):
-    cprint('================== День {} =================='.format(day), color='red')
-    misha.act()
-    lena.act()
-    cprint(misha, color='cyan')
-    cprint(lena, color='cyan')
-    cprint(home, color='cyan')
-cprint('====================================', color='red')
-print(f'{misha.name} отдыхал {misha.free_days} дней')
-print(f'{lena.name} отдыхала {lena.free_days} дней')
-print(f'Итоги года: съели еды - {home.total_food}, заработали денег - {home.total_money}, купили - '
-      f'{home.total_buy_fur_coat} шуб')
-
-
 ######################################################## Часть вторая бис
 #
 # После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
@@ -183,20 +165,54 @@ print(f'Итоги года: съели еды - {home.total_food}, зарабо
 
 class Child(Man):
 
-    def __init__(self):
-        super().__init__()
-
     def __str__(self):
         return super().__str__()
 
     def act(self):
-        pass
+        if self.fullness <= 0:
+            print(f'{self.name} умерла от голода...')
+            self.isAlive = False
+            return
+        if self.fullness < 10:
+            self.eat()
+        else:
+            self.sleep()
 
     def eat(self):
-        pass
+        if self.house.food >= 10:
+            self.fullness += 10
+            self.house.food -= 10
+            self.house.dirt += 1
+            self.house.total_food += 10
+            print(f'{self.name} покушал(а)')
+        else:
+            self.fullness -= 2
+            print(f'{self.name} голодает...')
 
     def sleep(self):
-        pass
+        self.fullness -= 3
+        print(f'{self.name} спал весь день')
+
+
+home = House(name='Экодолье Шолохово')
+misha = Husband(name='Миша', house=home)
+lena = Wife(name='Лена', house=home, helper=misha)
+kolya = Child(name='Коля', house=home)
+
+for day in range(1, 366):
+    cprint('================== День {} =================='.format(day), color='red')
+    misha.act()
+    lena.act()
+    kolya.act()
+    cprint(misha, color='cyan')
+    cprint(lena, color='cyan')
+    cprint(kolya, color='cyan')
+    cprint(home, color='cyan')
+cprint('====================================', color='red')
+print(f'{misha.name} отдыхал {misha.free_days} дней')
+print(f'{lena.name} отдыхала {lena.free_days} дней')
+print(f'Итоги года: съели еды - {home.total_food}, заработали денег - {home.total_money}, купили - '
+      f'{home.total_buy_fur_coat} шуб')
 
 ######################################################## Часть третья
 #
