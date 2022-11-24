@@ -256,27 +256,27 @@ class Child(Man):
         print(f'{self.name} спал весь день')
 
 
-home = House(name='Наш TownHouse')
-misha = Husband(name='Миша', house=home)
-lena = Wife(name='Лена', house=home, helper=misha)
+home = House(name='Наш House')
+petya = Husband(name='Петя', house=home)
+olia = Wife(name='Оля', house=home, helper=petya)
 kolya = Child(name='Коля', house=home)
-bars = Cat(name='Мурзик', house=home)
+bars = Cat(name='Барсик', house=home)
 
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
-    misha.act()
-    lena.act()
+    petya.act()
+    olia.act()
     kolya.act()
     bars.act()
-    cprint(misha, color='cyan')
-    cprint(lena, color='cyan')
+    cprint(petya, color='cyan')
+    cprint(olia, color='cyan')
     cprint(kolya, color='cyan')
     cprint(bars, color='cyan')
     cprint(home, color='cyan')
 
 cprint('====================================', color='red')
-print(f'{misha.name} отдыхал {misha.free_days} дней')
-print(f'{lena.name} отдыхала {lena.free_days} дней')
+print(f'{petya.name} отдыхал {petya.free_days} дней')
+print(f'{olia.name} отдыхала {olia.free_days} дней')
 print(f'Итоги года: съели еды - {home.total_food}, заработали денег - {home.total_money}, купили - '
       f'{home.total_buy_fur_coat} шуб')
 
