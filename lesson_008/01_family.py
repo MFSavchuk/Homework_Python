@@ -66,6 +66,7 @@ class Man:
         self.fullness = 30
         self.happiness = 100
         self.free_days = 0
+        self.isAlive = True
 
     def __str__(self):
         return f'{self.name}: сытость - {self.fullness}, счастье - {self.happiness}'
@@ -75,6 +76,7 @@ class Man:
             self.fullness += 30
             self.house.food -= 30
             self.house.dirt += 5
+            self.house.total_food += 30
             print(f'{self.name} покушал(а)')
         else:
             self.fullness -= 5
@@ -89,9 +91,11 @@ class Husband(Man):
     def act(self):
         if self.fullness <= 0:
             print(f'{self.name} умер от голода...')
+            self.isAlive = False
             return
         if self.happiness < 10:
             print(f'{self.name} умер от депрессии...')
+            self.isAlive = False
             return
         if self.house.dirt > 90:
             self.happiness -= 10
@@ -109,6 +113,7 @@ class Husband(Man):
     def work(self):
         self.house.money += 150
         self.fullness -= 10
+        self.house.total_money += 150
         print(f'{self.name} работал весь день')
 
     def coding(self):
@@ -116,6 +121,12 @@ class Husband(Man):
         self.fullness -= 10
         self.house.dirt += 5
         print(f'{self.name} программировал весь день')
+
+    def help_wife_with_money(self):
+        if self.isAlive:
+            self.work()
+        else:
+            print(f'{self.name} не может это сделать. Он умер...')
 
 
 class Wife(Man):
@@ -127,9 +138,11 @@ class Wife(Man):
     def act(self):
         if self.fullness <= 0:
             print(f'{self.name} умерла от голода...')
+            self.isAlive = False
             return
         if self.happiness < 10:
             print(f'{self.name} умерла от депрессии...')
+            self.isAlive = False
             return
         if self.house.dirt > 70:
             self.happiness -= 10
@@ -139,7 +152,7 @@ class Wife(Man):
             self.buy_fur_coat()
         elif self.fullness < 30:
             self.eat()
-        elif self.house.dirt > randint(50, 130):
+        elif self.house.dirt > randint(50, 100):
             self.clean_house()
         else:
             self.fullness -= 10
@@ -154,7 +167,7 @@ class Wife(Man):
             print(f'{self.name} купила еды')
         else:
             print(f'{self.name} просит {self.helper.name} заработать на еду')
-            self.helper.work()
+            self.helper.help_wife_with_money()
 
     def buy_fur_coat(self):
         if self.house.money >= 350:
@@ -164,7 +177,7 @@ class Wife(Man):
             print(f'{self.name} купила ШУБУ')
         else:
             print(f'{self.name} просит {self.helper.name} заработать на ШУБУ')
-            self.helper.work()
+            self.helper.help_wife_with_money()
 
     def clean_house(self):
         random = randint(5, 100)
@@ -182,7 +195,7 @@ home = House(name='Экодолье Шолохово')
 misha = Husband(name='Миша', house=home)
 lena = Wife(name='Лена', house=home, helper=misha)
 
-for day in range(1, 365):
+for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     misha.act()
     lena.act()
@@ -192,9 +205,9 @@ for day in range(1, 365):
 cprint('====================================', color='red')
 print(f'{misha.name} отдыхал {misha.free_days} дней')
 print(f'{lena.name} отдыхала {lena.free_days} дней')
-print(f'{lena.name} купила {home.total_buy_fur_coat} шуб')
+print(f'Итоги года: съели еды - {home.total_food}, заработали денег - {home.total_money}, купили - '
+      f'{home.total_buy_fur_coat} шуб')
 
-# TODO после реализации первой части - отдать на проверку учителю
 
 ######################################################## Часть вторая
 #
