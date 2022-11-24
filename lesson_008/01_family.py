@@ -234,22 +234,23 @@ print(f'Итоги года: съели еды - {home.total_food}, зарабо
 # Если кот дерет обои, то грязи становится больше на 5 пунктов
 
 
-# class Cat:
-#
-#     def __init__(self):
-#         pass
-#
-#     def act(self):
-#         pass
-#
-#     def eat(self):
-#         pass
-#
-#     def sleep(self):
-#         pass
-#
-#     def soil(self):
-#         pass
+class Cat:
+
+    def __init__(self, name):
+        self.name = name
+        self.fullness = 30
+
+    def act(self):
+        pass
+
+    def eat(self):
+        pass
+
+    def sleep(self):
+        pass
+
+    def soil(self):
+        pass
 
 
 ######################################################## Часть вторая бис
