@@ -15,6 +15,7 @@ class House:
         self.total_food = 0
         self.total_buy_fur_coat = 0
         self.total_money += self.money
+        self.cat_food = 30
 
     def __str__(self):
         return f'{self.name}: денег - {self.money}, еды - {self.food}, загрязнен на {self.dirt}%'
@@ -43,6 +44,12 @@ class Man:
             self.fullness -= 5
             print(f'{self.name} голодает...')
 
+    def petting_cat(self):
+        self.happiness += 5
+        self.fullness -= 10
+        self.house.dirt += 5
+        print(f'{self.name} гладил(а) кота весь день')
+
 
 class Husband(Man):
 
@@ -62,10 +69,14 @@ class Husband(Man):
             self.happiness -= 10
         if self.fullness < 30:
             self.eat()
-        elif self.house.money < 50:
+        elif self.house.money < 250:
             self.work()
         elif self.happiness < 30:
-            self.coding()
+            chose = randint(1, 5)
+            if chose == 1:
+                self.coding()
+            else:
+                self.petting_cat()
         else:
             self.fullness -= 10
             print(f'{self.name} отдыхал')
@@ -113,12 +124,18 @@ class Wife(Man):
             self.buy_fur_coat()
         elif self.fullness < 30:
             self.eat()
+        elif self.house.cat_food < 10:
+            self.buy_cat_food()
         elif self.house.dirt > randint(50, 100):
             self.clean_house()
         else:
-            self.fullness -= 10
-            print(f'{self.name} отдыхала')
-            self.free_days += 1
+            chose = randint(1, 5)
+            if chose == 1:
+                self.petting_cat()
+            else:
+                self.fullness -= 10
+                print(f'{self.name} отдыхала')
+                self.free_days += 1
 
     def shopping(self):
         if self.house.money >= 50:
@@ -150,6 +167,57 @@ class Wife(Man):
             self.house.dirt = 0
             self.fullness -= 10
             print(f'{self.name} убиралась весь день')
+
+    def buy_cat_food(self):
+        if self.house.money >= 30:
+            self.house.cat_food += 30
+            self.house.money -= 30
+            self.fullness -= 10
+            print(f'{self.name} купила еды для кота')
+        else:
+            print(f'У {self.name} нет денег на еду коту')
+
+
+class Cat:
+
+    def __init__(self, name, house):
+        self.name = name
+        self.house = house
+        self.fullness = 30
+        self.isAlive = True
+
+    def __str__(self):
+        return f'{self.name}: сытость - {self.fullness}'
+
+    def act(self):
+        if self.fullness <= 0:
+            print(f'{self.name} умер от голода...')
+            self.isAlive = False
+            return
+        chose = randint(1, 9)
+        if self.fullness < 20:
+            self.eat()
+        elif chose == 3:
+            self.soil()
+        else:
+            self.sleep()
+
+    def eat(self):
+        if self.house.cat_food >= 10:
+            self.house.cat_food -= 10
+            self.fullness += 20
+        else:
+            self.fullness -= 1
+            print(f'{self.name} голодает...')
+
+    def sleep(self):
+        self.fullness -= 10
+        print(f'{self.name} спал весь день')
+
+    def soil(self):
+        self.fullness -= 10
+        self.house.dirt += 5
+        print(f'{self.name} весь день драл обои')
 
 
 ######################################################## Часть вторая бис
@@ -198,16 +266,20 @@ home = House(name='Экодолье Шолохово')
 misha = Husband(name='Миша', house=home)
 lena = Wife(name='Лена', house=home, helper=misha)
 kolya = Child(name='Коля', house=home)
+murzik = Cat(name='Мурзик', house=home)
 
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     misha.act()
     lena.act()
     kolya.act()
+    murzik.act()
     cprint(misha, color='cyan')
     cprint(lena, color='cyan')
     cprint(kolya, color='cyan')
+    cprint(murzik, color='cyan')
     cprint(home, color='cyan')
+
 cprint('====================================', color='red')
 print(f'{misha.name} отдыхал {misha.free_days} дней')
 print(f'{lena.name} отдыхала {lena.free_days} дней')
