@@ -263,22 +263,22 @@ print(f'Итоги года: съели еды - {home.total_food}, зарабо
 # отличия от взрослых - кушает максимум 10 единиц еды,
 # степень счастья  - не меняется, всегда ==100 ;)
 
-# class Child:
-#
-#     def __init__(self):
-#         pass
-#
-#     def __str__(self):
-#         return super().__str__()
-#
-#     def act(self):
-#         pass
-#
-#     def eat(self):
-#         pass
-#
-#     def sleep(self):
-#         pass
+class Child(Man):
+
+    def __init__(self):
+        super().__init__()
+
+    def __str__(self):
+        return super().__str__()
+
+    def act(self):
+        pass
+
+    def eat(self):
+        pass
+
+    def sleep(self):
+        pass
 
 
 # TODO после реализации второй части - отдать на проверку учителем две ветки
