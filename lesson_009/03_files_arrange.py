@@ -31,10 +31,26 @@ import os, time, shutil
 #   os.makedirs
 #   shutil.copy2
 #
-# Чтение документации/гугла по функциям - приветствуется. Как и поиск альтернативных вариантов :)
+# Чтение документации/гугла по функциям - приветствуется. Как и поиск альтернативных вариантов:)
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
-# TODO здесь ваш код
+path = 'icons'
+new_path = 'icons_by_year'
+
+# Пройтись по всем файлам в директории.
+for dirpath, dirnames, filenames in os.walk(os.path.normpath(path)):
+
+    for file in filenames:
+        full_file_path = os.path.join(dirpath, file)
+        secs = os.path.getmtime(full_file_path)
+        time_file = time.gmtime(secs)
+        full_new_path = os.path.join(new_path, str(time_file.tm_year), str(time_file.tm_mon))
+
+        if os.path.isdir(full_new_path):
+            shutil.copy2(full_file_path, full_new_path)
+        else:
+            os.makedirs(full_new_path)
+            shutil.copy2(full_file_path, full_new_path)
 
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
