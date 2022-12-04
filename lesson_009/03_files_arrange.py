@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os, time, shutil
+import os, time, shutil, zipfile
 
 # Нужно написать скрипт для упорядочивания фотографий (вообще любых файлов)
 # Скрипт должен разложить файлы из одной папки по годам и месяцам в другую.
@@ -35,8 +35,8 @@ import os, time, shutil
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
 path = 'C:\\Users\\michael\\OneDrive\\Desktop\\icons'
+path_zip = 'icons.zip'
 new_path = 'C:\\Users\\michael\\OneDrive\\Desktop\\icons_by_year'
-
 
 class FilesArrange:
 
@@ -64,6 +64,25 @@ class FilesArrange:
 
 filesarrange = FilesArrange(path=path, new_path=new_path)
 filesarrange.arrange()
+
+# with zipfile.ZipFile(path_zip, 'a') as zf:
+#     for file in zf.namelist():
+#         print(file)
+#         # print(os.path.dirname(file))
+#
+#         if file.endswith('.png'):
+#
+#             # full_file_path = os.path.join(dirpath, file)
+#             secs = os.path.getmtime(file)
+#             # time_file = time.gmtime(secs)
+#             # full_new_path = os.path.join(self.new_path, str(time_file.tm_year), str(time_file.tm_mon))
+#             #
+#             # if os.path.isdir(full_new_path):
+#             #     shutil.copy2(full_file_path, full_new_path)
+#             # else:
+#             #     os.makedirs(full_new_path)
+#             #             shutil.copy2(full_file_path, full_new_path)
+
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
 # Основная функция должна брать параметром имя zip-файла и имя целевой папки.
