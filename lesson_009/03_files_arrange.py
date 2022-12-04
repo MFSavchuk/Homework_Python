@@ -34,24 +34,36 @@ import os, time, shutil
 # Чтение документации/гугла по функциям - приветствуется. Как и поиск альтернативных вариантов:)
 # Требования к коду: он должен быть готовым к расширению функциональности. Делать сразу на классах.
 
-path = 'icons'
-new_path = 'icons_by_year'
+path = 'C:\\Users\\michael\\OneDrive\\Desktop\\icons'
+new_path = 'C:\\Users\\michael\\OneDrive\\Desktop\\icons_by_year'
 
-# Пройтись по всем файлам в директории.
-for dirpath, dirnames, filenames in os.walk(os.path.normpath(path)):
 
-    for file in filenames:
-        full_file_path = os.path.join(dirpath, file)
-        secs = os.path.getmtime(full_file_path)
-        time_file = time.gmtime(secs)
-        full_new_path = os.path.join(new_path, str(time_file.tm_year), str(time_file.tm_mon))
+class FilesArrange:
 
-        if os.path.isdir(full_new_path):
-            shutil.copy2(full_file_path, full_new_path)
-        else:
-            os.makedirs(full_new_path)
-            shutil.copy2(full_file_path, full_new_path)
+    def __init__(self, path, new_path):
+        self.path = os.path.normpath(path)
+        self.new_path = os.path.normpath(new_path)
 
+    # Пройтись по всем файлам в директории.
+
+    def arrange(self):
+        for dirpath, dirnames, filenames in os.walk(self.path):
+
+            for file in filenames:
+                full_file_path = os.path.join(dirpath, file)
+                secs = os.path.getmtime(full_file_path)
+                time_file = time.gmtime(secs)
+                full_new_path = os.path.join(self.new_path, str(time_file.tm_year), str(time_file.tm_mon))
+
+                if os.path.isdir(full_new_path):
+                    shutil.copy2(full_file_path, full_new_path)
+                else:
+                    os.makedirs(full_new_path)
+                    shutil.copy2(full_file_path, full_new_path)
+
+
+filesarrange = FilesArrange(path=path, new_path=new_path)
+filesarrange.arrange()
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
 # Основная функция должна брать параметром имя zip-файла и имя целевой папки.
