@@ -43,9 +43,9 @@ def check_line(line):
     name, email, age = line.split(' ')
     if not name.isalpha():
         raise NotNameError('Имя содержит не только буквы')
-    if '@' and '.' not in email:
+    if '@' not in email or '.' not in email:
         raise NotEmailError('Почта не содержит @ или . ')
-    if int(age) > 100 or int(age) < 10:
+    if not 10 <= int(age) <= 99:
         raise ValueError('Возраст меньше 10 или больше 99')
 
 
