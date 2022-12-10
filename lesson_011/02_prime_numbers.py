@@ -26,22 +26,19 @@ class PrimeNumbers:
 
     def __init__(self, n):
         self.n = n
-        self.prime_numbers = None
-        self.number = None
+        self.number = 1
 
     def __iter__(self):
-        self.prime_numbers = []
         self.number = 1
         return self
 
     def __next__(self):
         while self.number < self.n:
             self.number += 1
-            for prime in self.prime_numbers:
+            for prime in range(2, self.number):
                 if self.number % prime == 0:
                     break
             else:
-                self.prime_numbers.append(self.number)
                 return self.number
         else:
             raise StopIteration()
