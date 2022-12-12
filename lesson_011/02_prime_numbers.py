@@ -43,10 +43,10 @@ class PrimeNumbers:
         else:
             raise StopIteration()
 
-
-prime_number_iterator = PrimeNumbers(n=10000)
-for number in prime_number_iterator:
-    print(number)
+#
+# prime_number_iterator = PrimeNumbers(n=10000)
+# for number in prime_number_iterator:
+#     print(number)
 
 # TODO после подтверждения части 1 преподователем, можно делать
 # Часть 2
@@ -54,13 +54,20 @@ for number in prime_number_iterator:
 # Распечатать все простые числа до 10000 в столбик
 
 
-# def prime_numbers_generator(n):
-#     pass
-#     # TODO здесь ваш код
-#
-#
-# for number in prime_numbers_generator(n=10000):
-#     print(number)
+def prime_numbers_generator(n):
+    number = 1
+    while number < n:
+        number += 1
+        for prime in range(2, number):
+            if number % prime == 0:
+               break
+        else:
+            yield number
+    # TODO здесь ваш код
+
+
+for number in prime_numbers_generator(n=10000):
+    print(number)
 
 # Часть 3
 # Написать несколько функций-фильтров, которые выдает True, если число:
