@@ -8,18 +8,28 @@
 # Лог файл открывать каждый раз при ошибке в режиме 'a'
 
 
-def log_errors(func):
-    pass
-    # TODO здесь ваш код
+def get_log_errors(file):
+    def log_errors(func):
+        def surrogate(*args, **kwargs):
+            try:
+                func(*args, **kwargs)
+            except Exception as exc:
+                with open(file, 'a', encoding='utf8') as ff:
+                    ff.write(f'Invalid format: {exc}\n')
+                raise exc
+
+        return surrogate
+
+    return log_errors
 
 
 # Проверить работу на следующих функциях
-@log_errors
+@get_log_errors('log1.txt')
 def perky(param):
     return param / 0
 
 
-@log_errors
+@get_log_errors('log2.txt')
 def check_line(line):
     name, email, age = line.split(' ')
     if not name.isalpha():
@@ -43,8 +53,11 @@ for line in lines:
         check_line(line)
     except Exception as exc:
         print(f'Invalid format: {exc}')
-perky(param=42)
 
+try:
+    perky(param=42)
+except Exception as exc:
+    print(f'{exc}')
 
 # Усложненное задание (делать по желанию).
 # Написать декоратор с параметром - именем файла
@@ -52,4 +65,3 @@ perky(param=42)
 # @log_errors('function_errors.log')
 # def func():
 #     pass
-
