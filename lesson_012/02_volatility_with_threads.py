@@ -28,8 +28,8 @@ class Analyzer(threading.Thread):
     def __init__(self, path, lock, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.path = path
-        self.tickers_volatility = defaultdict(lambda: float)
         self.ticker = None
+        self.volatility = None
         self.lock = lock
 
     def run(self):
@@ -39,8 +39,6 @@ class Analyzer(threading.Thread):
             for line in ff:
                 line = line[:-1]
                 secid, tradetime, price, quantity = line.split(',')
-                # with self.lock:
-                #     print(secid, tradetime, price, quantity)
                 if 'SECID,TRADETIME,PRICE,QUANTITY' in line:
                     continue
                 if self.ticker is None:
@@ -51,14 +49,10 @@ class Analyzer(threading.Thread):
         mix_price = min(price_list)
         max_price = max(price_list)
         average_price = (max_price + mix_price) / 2
-        volatility = round(((max_price - mix_price) / average_price) * 100, 1)
-
-        # with self.lock:
-        #     print(f'Номер тикера - {self.ticker}, Минимальная цена - {mix_price}, Максимальная цена - {max_price},'
-        #           f'Средняя цена - {average_price}, Волатильность - {volatility}%')
+        self.volatility = round(((max_price - mix_price) / average_price) * 100, 1)
 
         with self.lock:
-            Analyzer.tickers_volatility[self.ticker] = volatility
+            Analyzer.tickers_volatility[self.ticker] = self.volatility
 
 
 def print_result(tickers_volatility):

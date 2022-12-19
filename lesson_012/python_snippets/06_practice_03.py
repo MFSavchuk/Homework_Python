@@ -51,6 +51,7 @@ class PageSizer(multiprocessing.Process):
                 self.total_bytes += data['total_bytes']
         self.collector.put(dict(url=self.url, total_bytes=self.total_bytes))
 
+
     def _get_html(self, url):
         try:
             print(f'Go {url}...')
@@ -73,6 +74,7 @@ def main():
 
     while not collector.empty():
         data = collector.get()
+        print(data)
         print(f"For url {data['url']} need download {data['total_bytes']//1024} Kb ({data['total_bytes']} bytes)")
 
 

@@ -84,6 +84,7 @@ class Analyzer:
         self.path = path
         self.tickers_volatility = defaultdict(lambda: float)
         self.ticker = None
+        self.volatility = None
 
     def run(self):
         with open(self.path, 'r', encoding='utf8') as ff:
@@ -103,11 +104,11 @@ class Analyzer:
         mix_price = min(price_list)
         max_price = max(price_list)
         average_price = (max_price + mix_price) / 2
-        volatility = round(((max_price - mix_price) / average_price) * 100, 1)
-        print(f'Номер тикера - {self.ticker}, Минимальная цена - {mix_price}, Максимальная цена - {max_price},'
-              f'Средняя цена - {average_price}, Волатильность - {volatility}%')
+        self.volatility = round(((max_price - mix_price) / average_price) * 100, 1)
+        # print(f'Номер тикера - {self.ticker}, Минимальная цена - {mix_price}, Максимальная цена - {max_price},'
+        #       f'Средняя цена - {average_price}, Волатильность - {self.volatility}%')
 
-        Analyzer.tickers_volatility[self.ticker] = volatility
+        Analyzer.tickers_volatility[self.ticker] = self.volatility
 
 
 def print_result(tickers_volatility):
