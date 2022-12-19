@@ -11,4 +11,5 @@ def time_track(func):
         elapsed = round(ended_at - started_at, 4)
         print(f'Функция работала {elapsed} секунд(ы)')
         return result
+
     return surrogate

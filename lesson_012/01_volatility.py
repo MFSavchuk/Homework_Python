@@ -112,8 +112,6 @@ class AnalyzerFileTransactions:
 def print_result(tickers_volatility):
     tickers_zero_volatility = defaultdict(lambda: float)
     tickers_not_zero_volatility = defaultdict(lambda: float)
-    tickers_max_volatility = None
-    tickers_min_volatility = None
 
     for ticker, volatility in tickers_volatility.items():
         if volatility == 0:
@@ -145,11 +143,13 @@ def print_result(tickers_volatility):
     print('\n')
 
 
+my_path = 'trades'
+
+
 @time_track
-def my_func():
-    my_path = 'trades'
+def my_func(path):
     tickers = defaultdict(lambda: float)
-    for dirpath, dirnames, filenames in os.walk(my_path):
+    for dirpath, dirnames, filenames in os.walk(path):
         for file in filenames:
             full_file_path = os.path.join(dirpath, file)
             my_analyzer = AnalyzerFileTransactions(path=full_file_path)
@@ -159,4 +159,4 @@ def my_func():
     print_result(tickers_volatility=tickers)
 
 
-my_func()
+my_func(path=my_path)
