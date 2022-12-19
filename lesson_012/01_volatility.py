@@ -77,13 +77,13 @@ from python_snippets.utils import time_track
 #         <обработка данных>
 
 
-class AnalyzerFileTransactions:
+class Analyzer:
+    tickers_volatility = defaultdict(lambda: float)
 
     def __init__(self, path):
         self.path = path
         self.tickers_volatility = defaultdict(lambda: float)
         self.ticker = None
-        self.volatility = None
 
     def run(self):
         with open(self.path, 'r', encoding='utf8') as ff:
@@ -102,11 +102,11 @@ class AnalyzerFileTransactions:
         mix_price = min(price_list)
         max_price = max(price_list)
         average_price = (max_price + mix_price) / 2
-        self.volatility = round(((max_price - mix_price) / average_price) * 100, 1)
+        volatility = round(((max_price - mix_price) / average_price) * 100, 1)
         print(f'Номер тикера - {self.ticker}, Минимальная цена - {mix_price}, Максимальная цена - {max_price},'
-              f'Средняя цена - {average_price}, Волатильность - {self.volatility}%')
+              f'Средняя цена - {average_price}, Волатильность - {volatility}%')
 
-        return self.ticker, self.volatility
+        Analyzer.tickers_volatility[self.ticker] = volatility
 
 
 def print_result(tickers_volatility):
@@ -143,20 +143,16 @@ def print_result(tickers_volatility):
     print('\n')
 
 
-my_path = 'trades'
-
-
 @time_track
 def my_func(path):
-    tickers = defaultdict(lambda: float)
     for dirpath, dirnames, filenames in os.walk(path):
         for file in filenames:
             full_file_path = os.path.join(dirpath, file)
-            my_analyzer = AnalyzerFileTransactions(path=full_file_path)
-            ticker, volatility = my_analyzer.run()
-            tickers[ticker] = volatility
+            my_analyzer = Analyzer(path=full_file_path)
+            my_analyzer.run()
 
-    print_result(tickers_volatility=tickers)
+    print_result(tickers_volatility=Analyzer.tickers_volatility)
 
 
+my_path = 'trades'
 my_func(path=my_path)
