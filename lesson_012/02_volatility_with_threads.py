@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 # Задача: вычислить 3 тикера с максимальной и 3 тикера с минимальной волатильностью в МНОГОПОТОЧНОМ стиле
 #
 # Бумаги с нулевой волатильностью вывести отдельно.
@@ -17,6 +16,97 @@
 #       ТИКЕР7, ТИКЕР8, ТИКЕР9, ТИКЕР10, ТИКЕР11, ТИКЕР12
 # Волатильности указывать в порядке убывания. Тикеры с нулевой волатильностью упорядочить по имени.
 #
-# TODO Внимание! это задание можно выполнять только после зачета lesson_012/01_volatility.py !!!
+import os
+from collections import defaultdict
+from lesson_012.python_snippets.utils import time_track
+import threading
 
-# TODO тут ваш код в многопоточном стиле
+
+class Analyzer(threading.Thread):
+    tickers_volatility = defaultdict(lambda: float)
+
+    def __init__(self, path, lock, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.path = path
+        self.tickers_volatility = defaultdict(lambda: float)
+        self.ticker = None
+        self.lock = lock
+
+    def run(self):
+        with open(self.path, 'r', encoding='utf8') as ff:
+            price_list = []
+
+            for line in ff:
+                line = line[:-1]
+                secid, tradetime, price, quantity = line.split(',')
+                # with self.lock:
+                #     print(secid, tradetime, price, quantity)
+                if 'SECID,TRADETIME,PRICE,QUANTITY' in line:
+                    continue
+                if self.ticker is None:
+                    self.ticker = secid
+                price = float(price)
+                price_list.append(price)
+
+        mix_price = min(price_list)
+        max_price = max(price_list)
+        average_price = (max_price + mix_price) / 2
+        volatility = round(((max_price - mix_price) / average_price) * 100, 1)
+
+        # with self.lock:
+        #     print(f'Номер тикера - {self.ticker}, Минимальная цена - {mix_price}, Максимальная цена - {max_price},'
+        #           f'Средняя цена - {average_price}, Волатильность - {volatility}%')
+
+        with self.lock:
+            Analyzer.tickers_volatility[self.ticker] = volatility
+
+
+def print_result(tickers_volatility):
+    tickers_zero_volatility = defaultdict(lambda: float)
+    tickers_not_zero_volatility = defaultdict(lambda: float)
+
+    for ticker, volatility in tickers_volatility.items():
+        if volatility == 0:
+            tickers_zero_volatility[ticker] = volatility
+        else:
+            tickers_not_zero_volatility[ticker] = volatility
+    tickers_max_volatility = sorted(tickers_not_zero_volatility.items(), key=lambda x: x[1], reverse=True)[:3]
+    tickers_min_volatility = sorted(tickers_not_zero_volatility.items(), key=lambda x: x[1], reverse=False)[:3]
+    tickers_zero_volatility = sorted(tickers_zero_volatility.items(), key=lambda x: x[0])
+    # print(tickers_zero_volatility)
+    # print(tickers_min_volatility)
+    # print(tickers_max_volatility)
+    print('\n')
+    print('{a:-^32}'.format(a='-'))
+    print('|{a:^30}|'.format(a='Максимальная волатильность:'))
+    print('|{a:-^30}|'.format(a='-'))
+    for ticker, volatility in tickers_max_volatility:
+        print('|{a:^30}|'.format(a=f'ТИКЕР-{ticker} - {volatility} %'))
+    print('|{a:-^30}|'.format(a='-'))
+    print('|{a:^30}|'.format(a='Минимальная волатильность:'))
+    print('|{a:-^30}|'.format(a='-'))
+    for ticker, volatility in tickers_min_volatility:
+        print('|{a:^30}|'.format(a=f'ТИКЕР-{ticker} - {volatility} %'))
+    print('{a:-^32}'.format(a='-'))
+    print('{a:^30}'.format(a='Нулевая волатильность:'))
+    print('\t', end='')
+    for ticker, volatility in tickers_zero_volatility:
+        print(f'ТИКЕР-{ticker},', end=' ')
+    print('\n')
+
+
+@time_track
+def my_func(path):
+    lock = threading.Lock()
+    analyzers = [Analyzer(path=os.path.join(dirpath, file), lock=lock) for dirpath, dirnames, filenames in os.walk(path)
+                 for file in filenames]
+    for analyzer in analyzers:
+        analyzer.start()
+    for analyzer in analyzers:
+        analyzer.join()
+
+    print_result(tickers_volatility=Analyzer.tickers_volatility)
+
+
+my_path = 'trades'
+my_func(path=my_path)

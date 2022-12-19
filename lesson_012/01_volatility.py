@@ -92,6 +92,7 @@ class Analyzer:
             for line in ff:
                 line = line[:-1]
                 secid, tradetime, price, quantity = line.split(',')
+                # print(secid, tradetime, price, quantity)
                 if 'SECID,TRADETIME,PRICE,QUANTITY' in line:
                     continue
                 if self.ticker is None:
