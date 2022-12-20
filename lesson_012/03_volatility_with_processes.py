@@ -53,7 +53,7 @@ class Analyzer(multiprocessing.Process):
         average_price = (max_price + mix_price) / 2
         self.volatility = round(((max_price - mix_price) / average_price) * 100, 1)
 
-        self.collector.put(dict(ticker=self.ticker, volatility=self.volatility))
+        self.collector.put(dict(key=self.ticker, value=self.volatility))
 
 
 def print_result(tickers_volatility):
@@ -104,7 +104,7 @@ def my_func(path):
     tickers_volatility = defaultdict(lambda: float)
     while not collector.empty():
         data = collector.get()
-        tickers_volatility[data['ticker']] = data['volatility']
+        tickers_volatility[data['key']] = data['value']
 
     print_result(tickers_volatility=tickers_volatility)
 
